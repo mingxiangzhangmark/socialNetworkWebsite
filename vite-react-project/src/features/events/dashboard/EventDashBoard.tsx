@@ -3,18 +3,19 @@
 import { Grid } from "semantic-ui-react";
 import EventList from "./EventList";
 // import EventForm from "../form/EventForm";
-import { sampleData } from "../../../app/api/sampleData";
-import { useEffect, useState } from "react";
-import { AppEvent } from "../../../app/types/event";
+// import { sampleData } from "../../../app/api/sampleData";
+// import { useEffect, useState } from "react";
+// import { AppEvent } from "../../../app/types/event";
+import { useAppSelector } from "../../../app/store/store";
 
 
 
 export default function EventDashBoard() {
-  const [events, setEvents] = useState<AppEvent[]>([])
+  const {events} = useAppSelector(state => state.events);
 
-  useEffect(()=>{
-    setEvents(sampleData);
-  },[])
+  // useEffect(()=>{
+  //   setEvents(sampleData);
+  // },[])
 
   return (
     <Grid>
