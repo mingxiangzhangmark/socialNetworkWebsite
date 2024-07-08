@@ -1,5 +1,5 @@
 // import React from 'react'
-import { Segment , Item, Header, Button, Image, Grid, Icon} from "semantic-ui-react";
+import { Segment ,  Button, Grid, Icon} from "semantic-ui-react";
 import { AppEvent } from "../../../app/types/event";
 
 

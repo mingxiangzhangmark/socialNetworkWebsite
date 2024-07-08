@@ -21,3 +21,11 @@ body{
 .masthead h1.ui.header{
     font-size: 4em;
 }
+
+.react-datepicker-wrapper{
+    width: 100%;
+    /* margin-left: -20px; */
+}
+/* .ui.clearing.segment{
+    margin: 0.5em 5em;
+} */
