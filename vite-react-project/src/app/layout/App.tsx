@@ -12,7 +12,7 @@ import NavBar from "./nav/NavBar";
 // import { AppEvent } from "../types/event";
 import { Outlet, useLocation } from "react-router-dom";
 import HomePage from "../../features/events/home/HomePage";
-import ModalMessager from "../common/modals/ModalMessager";
+// import ModalMessager from "../common/modals/ModalMessager";
 import ModalManager from "../common/modals/ModalManager";
 
 

@@ -1,5 +1,5 @@
 // import React from 'react'
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 
 import { AppEvent } from "../../../app/types/event";

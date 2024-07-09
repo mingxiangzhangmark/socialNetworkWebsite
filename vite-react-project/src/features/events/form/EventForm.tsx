@@ -1,43 +1,88 @@
 
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
-import { useAppDispatch, useAppSelector } from "../../../app/store/store";
-import { createEvent, updateEvent } from "../eventSlice";
-import { createId } from "@paralleldrive/cuid2";
-import { Controller, Field, FieldValues, useForm } from "react-hook-form";
+import {  useAppSelector } from "../../../app/store/store";
+import { Controller,  FieldValues, useForm } from "react-hook-form";
 import { categoryOptions } from "./categoryOptions";
-// import { AppEvent } from "../../../app/types/event";
-// import { createId } from "@paralleldrive/cuid2";
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
+import {  Timestamp, } from "firebase/firestore";
+import { AppEvent } from "../../../app/types/event";
+import { toast } from "react-toastify";
+import { useFirestore } from "../../../app/hooks/firestore/useFirestore";
+import { useEffect } from "react";
+import { actions } from "../eventSlice";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
 export default function EventForm() {
+    const {loadDocument, create, update} = useFirestore('events');    
 
     const {register, handleSubmit, control,setValue, formState:{errors, isValid, isSubmitting}} = useForm({
         mode: 'onBlur',
+        defaultValues: async()=>{
+            if(event) return {...event, date: new Date(event.date)};
+        }
     });
-    let {id} = useParams();
-    const event = useAppSelector(state => state.events.events.find(e => e.id === id));
-    const dispatch = useAppDispatch();
+    const {id} = useParams();
+    const event = useAppSelector(state => state.events.data.find(e => e.id === id));
+    const {status} = useAppSelector(state => state.events);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!id) return;
+        loadDocument(id,actions);
+    }, [id, loadDocument])
 
+    async function updateEvent(data: AppEvent){
+        if (!event) return;
+        // const docRef = doc(db, 'events', event.id);
+        await update(data.id, {
+            ...data,
+            date:Timestamp.fromDate(data.date as unknown as Date)
 
+        });
+    }
 
-    function onSubmit(data: FieldValues){
-        // console.log(data);
-        
-        id = id ?? createId();
-    
-        event 
-        ? dispatch(updateEvent({...event, ...data, date: data.date.toString()}))
-        : dispatch(createEvent({...data, id, hostedBy: 'Bob', hostPhotoURL:'', attendees: [], date: data.date.toString()}));
-        navigate(`/events/${id}`);
+    async function createEvent(data: FieldValues){
+        // const newEventRef = doc(collection(db, 'events'));
+        const ref =  await create( {
+            ...data,
+            hostedBy: 'Bob',
+            attendees: [],
+            hostPhotoURL:'',
+            date: Timestamp.fromDate(data.date as unknown as Date)
+
+        });
+        return ref;
+    }
+
+    async function handleCancelToggle(event: AppEvent){
+        await update(event.id, {
+            isCancelled: !event.isCancelled
+        });
+        toast.success(`Event has been ${event.isCancelled ? 'Reactivated' : 'Cancelled'}`)
+    }
+
+    async function onSubmit(data: FieldValues){
+        try {
+            if (event){
+                await updateEvent({...event, ...data});
+                navigate(`/events/${event.id}`);
+            }else{
+                const ref = await createEvent(data);
+                navigate(`/events/${ref?.id}`);
+            }
+            
+        } catch (error) {
+            toast.error((error as Error).message);
+            // console.log(error);
+            
+        }
 
         
     }
-
+    if(status === 'loading') return <LoadingComponent/>
 
   return (
     <Segment clearing>
@@ -116,7 +161,15 @@ export default function EventForm() {
                 />
             </Form.Field>
             
-
+            {event &&(
+                <Button
+                type='button'
+                floated='left'
+                color={event.isCancelled ? 'green' : 'red'}
+                onClick={()=>handleCancelToggle(event)}
+                content = {event.isCancelled ? 'Reactivate Event' : 'Cancel Event'}
+                />
+            )}
             
             
 

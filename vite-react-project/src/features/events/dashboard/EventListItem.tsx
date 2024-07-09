@@ -1,19 +1,24 @@
-// import React from 'react'
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-
-import { Item, Segment,Icon, List, Button } from "semantic-ui-react";
+import { Item, Segment,Icon, List, Button, Label} from "semantic-ui-react";
 import EventListAttendee from "./EventListAttendee";
 import { AppEvent } from "../../../app/types/event";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { deleteEvent } from "../eventSlice";
+
+// import { remove } from "firebase/database";
+// import { useDispatch } from "react-redux";
+// import { deleteEvent } from "../eventSlice";
+// import { useState } from "react";
+// import { toast } from "react-toastify";
+// import { deleteDoc, doc } from "firebase/firestore";
+// import { db } from "../../../app/config/firebase";
+
+
 type Props = {
     event: AppEvent;
 }
 
 export default function EventListItem({event}:Props) {
-    const  dispatch = useDispatch();
+
+
   return (
     <Segment.Group>
         <Segment>
@@ -25,6 +30,14 @@ export default function EventListItem({event}:Props) {
                         <Item.Description>
                             Hosted by {event.hostedBy}
                         </Item.Description>
+                        {event.isCancelled && (
+                            <Label 
+                            style={{top: '-40px'}}
+                            ribbon='right'
+                            color='red'
+                            content='This event has been cancelled'
+                            />
+                        )}
                     </Item.Content>
                 </Item>
             </Item.Group>
@@ -39,7 +52,7 @@ export default function EventListItem({event}:Props) {
 
         <Segment secondary>
             <List horizontal>
-                {event.attendees.map((attendee:any) => (
+                {event.attendees.map(attendee => (
                     <EventListAttendee key = {attendee.id} attendee ={attendee}/>
                 ))}
                
@@ -48,7 +61,7 @@ export default function EventListItem({event}:Props) {
 
         <Segment clearing>
             <span>{event.description}</span>
-           <Button onClick={()=>dispatch(deleteEvent(event.id))}    color='red' floated='right' content='Delete'  />
+
            <Button as = {Link} to = {`/events/${event.id}`} color='teal' floated='right' content='View'  />
         </Segment>
     </Segment.Group>    
