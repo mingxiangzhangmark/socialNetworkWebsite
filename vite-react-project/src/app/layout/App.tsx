@@ -1,24 +1,35 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
-// import React from "react";
-// import { Button } from "semantic-ui-react";
 import { Container } from "semantic-ui-react";
-// import EventDashBoard from "../../features/events/dashboard/EventDashBoard";
 import NavBar from "./nav/NavBar";
-// import { useState } from "react";
-// import { AppEvent } from "../types/event";
 import { Outlet, useLocation } from "react-router-dom";
 import HomePage from "../../features/events/home/HomePage";
-// import ModalMessager from "../common/modals/ModalMessager";
 import ModalManager from "../common/modals/ModalManager";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebase";
+import { useDispatch } from "react-redux";
+import { logout, signIn } from "../../features/auth/authSlice";
 
 
 
 function App() {
    const location = useLocation();
+   const dispatch = useDispatch();
+
+
+   useEffect(()=>{
+      onAuthStateChanged(auth,{
+        next: (user)=>{
+          if(user){
+            dispatch(signIn(user))
+          }else{
+            dispatch(logout())
+          }
+        },
+        error: (error)=>console.log(error),
+        complete: ()=>{}
+      })
+   
+   },[])
 
   return (
     <>

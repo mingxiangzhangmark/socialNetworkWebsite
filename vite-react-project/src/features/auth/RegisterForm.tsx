@@ -1,14 +1,17 @@
-import { Button, Divider, Form, Label } from 'semantic-ui-react';
+import { Button, Form, Label } from 'semantic-ui-react';
 import ModalWrapper from '../../app/common/modals/ModalWrapper';
 import { FieldValues, useForm } from 'react-hook-form';
-import { signInWithEmailAndPassword} from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import { auth } from '../../app/config/firebase';
 import { closeModal } from '../../app/common/modals/modalSlice';
 import { useAppDispatch } from '../../app/store/store';
-import SocialLogin from './SocialLogin';
+import { signIn } from './authSlice';
+import { useFirestore } from '../../app/hooks/firestore/useFirestore';
+import { Timestamp } from 'firebase/firestore';
 
-export default function LoginForm() {
-    const {register, handleSubmit, setError, formState: {isSubmitting, isValid, isDirty, errors}} = useForm({
+export default function RegisterForm() {
+    const {set} = useFirestore('profiles');
+    const {register, setError,handleSubmit, formState: {isSubmitting, isValid, isDirty, errors}} = useForm({
         mode: 'onTouched'
     })
 
@@ -16,7 +19,15 @@ export default function LoginForm() {
     async function onSubmit(data: FieldValues) {
         
         try{
-             await signInWithEmailAndPassword(auth, data.email, data.password);
+             const userCreds = await createUserWithEmailAndPassword(auth,data.email, data.password);
+             await updateProfile(userCreds.user, {displayName: data.displayName})
+             await set(userCreds.user.uid, {
+                    displayName: data.displayName,
+                    email: data.email,
+                    createdAt: Timestamp.now()
+                
+             })
+             dispatch(signIn(userCreds.user));
              dispatch(closeModal());
         }catch(error: any){
             setError('root.serverError',{
@@ -28,8 +39,15 @@ export default function LoginForm() {
     }
 
     return (
-        <ModalWrapper header='Sign into SocialNetwork' size='mini'>
+        <ModalWrapper header='Register to re-vents'>
             <Form onSubmit={handleSubmit(onSubmit)}>
+                <Form.Input 
+                    
+                    defaultValue=''
+                    placeholder='Display Name'
+                    {...register('displayName', {required: true})}
+                    error={errors.displayName && 'Display is required'}
+                />
                 <Form.Input 
                     defaultValue=''
                     placeholder='Email address'
@@ -46,11 +64,11 @@ export default function LoginForm() {
                     {...register('password', {required: true})}
                     error={errors.password && 'Password is required'}
                 />
-                 {errors.root &&
-                    <Label basic color='red' 
-                    style={{diplay: 'block', marginBottom: 10}} 
-                    content={errors.root.serverError.message} />}
-                
+                {errors.root &&
+                <Label basic color='red' 
+                style={{diplay: 'block', marginBottom: 10}} 
+                content={errors.root.serverError.message} />}
+
                 <Button 
                     loading={isSubmitting}
                     disabled={!isValid || !isDirty || isSubmitting}
@@ -58,10 +76,8 @@ export default function LoginForm() {
                     fluid
                     size='large'
                     color='teal'
-                    content='Login'
+                    content='Register'
                 />
-                <Divider horizontal>Or</Divider>
-                <SocialLogin/>
             </Form>
         </ModalWrapper>
     )

@@ -18,7 +18,7 @@ export default function EventDashBoard() {
     loadCollection(actions);
   },[loadCollection])
 
-  if(status ==='loading') return <h1><LoadingComponent/></h1>
+  if(status ==='loading') return <LoadingComponent/>
 
   return (
     <Grid>
