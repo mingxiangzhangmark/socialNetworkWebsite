@@ -21,3 +21,14 @@ export type Attendee = {
     displayName: string;
     photoURL: string;
 }
+
+export type ChatComment = {
+    id: string;
+    text: string;
+    date: string | number;
+    uid: string;
+    displayName: string;
+    photoURL: string;
+    parentId: string | null;
+    childNodes : ChatComment[]
+}
