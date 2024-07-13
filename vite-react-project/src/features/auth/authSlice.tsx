@@ -3,6 +3,7 @@ import { AppUser} from '../../app/types/user'
 import { User } from 'firebase/auth'
 
 type State = {
+    [x: string]: any
     authenticated: boolean
     currentUser: AppUser | null
 }

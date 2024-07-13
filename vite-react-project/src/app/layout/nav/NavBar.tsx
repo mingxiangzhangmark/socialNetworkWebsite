@@ -6,9 +6,9 @@ import SignedOutButton from "./SignedOutButton";
 import SignedInMenu from "./SignedInMenu";
 // import { useState } from "react";
 import { useAppSelector } from "../../store/store";
-import { sampleData } from "../../api/sampleData";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+// import { sampleData } from "../../api/sampleData";
+// import { doc, setDoc } from "firebase/firestore";
+// import { db } from "../../config/firebase";
 
 
 
@@ -17,12 +17,7 @@ export default function NavBar() {
     // const [auth, setAuth] = useState(false);
     const {authenticated} = useAppSelector(state => state.auth)
 
-    function seedData(){
-        sampleData.forEach(async event => {
-            const {id, ...rest} = event;
-            await setDoc(doc(db, 'events', id), {...rest})
-        })
-    }
+
 
    return (
     <Menu inverted={true} fixed="top">
@@ -45,17 +40,7 @@ export default function NavBar() {
                     content='Create Event' />
             </Menu.Item>
             
-            {import.meta.env.MODE  &&(
-                <Menu.Item>
-                    <Button 
-                        onClick={seedData}
-                        color="teal"
-                        positive={true} 
-                        inverted={true} 
-                        content='Seed Data' />
-                </Menu.Item>
-            
-            )}
+
             {authenticated ? <SignedInMenu /> : <SignedOutButton />}
         </Container>
     </Menu>
