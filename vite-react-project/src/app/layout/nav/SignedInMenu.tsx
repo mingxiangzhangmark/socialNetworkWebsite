@@ -14,7 +14,7 @@ export default function SignedInMenu() {
         navigate('/');
     }
     return (
-        <Menu.Item position='right'>
+        <Menu.Item position='right' style={{zIndex:10}}>
             <Image avatar spaced='right' src={currentUser?.photoURL || '/user.png'} />
             {/* <Dropdown pointing='top left' text='Bob'> */}
             <Dropdown pointing='top left' text={currentUser?.displayName as string}>

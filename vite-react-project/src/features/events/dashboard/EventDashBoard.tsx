@@ -1,4 +1,4 @@
-
+// import {Sticky } from "semantic-ui-react";
 
 import { Grid } from "semantic-ui-react";
 import EventList from "./EventList";
@@ -32,7 +32,7 @@ export default function EventDashBoard() {
 
   return (
     <Grid>
-        <Grid.Column width={10} ref={contextRef} style={{top:-20}}>
+        <Grid.Column width={10} ref={contextRef} style={{top:-20}} >
           {status ==='loading' ? (
             <>
               <EventListItemPlaceholder/>
@@ -44,9 +44,15 @@ export default function EventDashBoard() {
            <EventList events={events}/>
         </Grid.Column>
         <Grid.Column width={6}>
-          <div className="ui fixed top sticky" style={{top: 78, width:405}}> 
+          <div className="ui fixed top sticky" style={{top: 78, width:405, zIndex:5}}> 
              <EventFilters setQuery= {setQuery}/>
           </div>
+
+          {/* <Sticky context={contextRef} offset={78}>
+           
+            <EventFilters setQuery= {setQuery}/>
+            
+          </Sticky> */}
     
          
         </Grid.Column>
