@@ -1,9 +1,10 @@
 import {  ActionCreatorWithOptionalPayload, ActionCreatorWithoutPayload, ActionCreatorWithPayload, ActionCreatorWithPreparedPayload, createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducers } from "@reduxjs/toolkit"
 
 export type GenericState<T> = {
-    data: T
+    data: T | []
     status: 'loading' | 'finished' | 'error'
     errors ?: any
+    loadedInitial?: boolean
   }
   
   export const createGenericSlice = <
@@ -34,6 +35,10 @@ export type GenericState<T> = {
             state.errors = action.payload
             state.status = 'error'
         },
+        reset: (state) => {
+          state.data = [],
+          state.loadedInitial = false
+        },
         ...reducers,
       },
     })
@@ -43,4 +48,6 @@ export type GenericState<T> = {
     loading : ActionCreatorWithoutPayload<string>;
     success : ActionCreatorWithPayload<T, string>| ActionCreatorWithPreparedPayload<any,T,string, never, never>;
     error: ActionCreatorWithOptionalPayload<any, string>;
+    //
+    reset: ActionCreatorWithoutPayload
   }
