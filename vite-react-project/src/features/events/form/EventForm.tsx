@@ -59,7 +59,7 @@ export default function EventForm() {
             
             }),
             attendeeIds: arrayUnion(currentUser.uid),
-            date: Timestamp.fromDate(data.date as unknown as Date)
+            date: Timestamp.fromDate(data.date as unknown as Date),
 
         });
         return ref;

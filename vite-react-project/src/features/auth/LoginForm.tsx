@@ -4,10 +4,13 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { signInWithEmailAndPassword} from 'firebase/auth';
 import { auth } from '../../app/config/firebase';
 import { closeModal } from '../../app/common/modals/modalSlice';
-import { useAppDispatch } from '../../app/store/store';
+import { useAppDispatch, useAppSelector } from '../../app/store/store';
 import SocialLogin from './SocialLogin';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
+    const nagivate = useNavigate();
+    const {data: location} = useAppSelector(state=>state.modals);
     const {register, handleSubmit, setError, formState: {isSubmitting, isValid, isDirty, errors}} = useForm({
         mode: 'onTouched'
     })
@@ -18,6 +21,7 @@ export default function LoginForm() {
         try{
              await signInWithEmailAndPassword(auth, data.email, data.password);
              dispatch(closeModal());
+             nagivate(location.from);
         }catch(error: any){
             setError('root.serverError',{
                 type:'400', message: error.message

@@ -10,7 +10,8 @@ type State = {
 
 const initialState: State = {
     authenticated: false,
-    currentUser: null
+    currentUser: null,
+    initialStated:false
 }
 
 export const authSlice = createSlice({
@@ -21,6 +22,7 @@ export const authSlice = createSlice({
             reducer: (state, action : PayloadAction<AppUser>) => {
                 state.authenticated = true;
                 state.currentUser = action.payload;
+                state.initialStated = true;
             },
             prepare:(user: User)=>{
                 const mapped: AppUser ={
@@ -37,6 +39,7 @@ export const authSlice = createSlice({
         logout: (state) => {
             state.authenticated = false;
             state.currentUser = null;
+            state.initialStated = true
         }
     }
 })
