@@ -1,7 +1,7 @@
-This is a demo social network web app project like blog
-I used technologies include: React, Redux, Typescript, Semantic UI, Google Firebase.
+### This is a demo social network web app project
+#### I used technologies include: React, Redux, Typescript, Semantic UI, Google Firebase.
 
-here is the demo link: 
+#### here is the demo link: 
 https://social-network-webapp-d5522.web.app/
 
 Pictures of my project:
